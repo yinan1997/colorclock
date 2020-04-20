@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html manifest="colorclock.appcache">
+    <head>
+        <title>Color Clock</title>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        
+        <!--web app meta tags to come-->
+        
+        
+        <!-- iPad examples. Include/create new versions you want to support. -->
+        <link href="apple-touch-icon-152x152.png" sizes="152x152" 
+            rel="apple-touch-icon-precomposed">
+        <!-- portrait -->
+        <link href="apple-touch-startup-image-1536x2008.png"
+              media="(device-width: 768px) and (device-height: 1024px)
+                 and (orientation: portrait)
+                 and (-webkit-device-pixel-ratio: 2)"
+              rel="apple-touch-startup-image">
+        <!-- landscape -->
+        <link href="apple-touch-startup-image-1496x2048.png"
+              media="(device-width: 768px) and (device-height: 1024px)
+                 and (orientation: landscape)
+                 and (-webkit-device-pixel-ratio: 2)"
+              rel="apple-touch-startup-image">
+
+        <!-- iPhone examples. Include/create new versions you want to support. -->
+        <link href="apple-touch-icon-120x120.png" sizes="120x120" 
+            rel="apple-touch-icon-precomposed">
+        <!-- iPhone, retina -->
+        <link href="apple-touch-startup-image-640x920.png"
+              media="(device-width: 320px) and (device-height: 480px)
+                 and (-webkit-device-pixel-ratio: 2)"
+              rel="apple-touch-startup-image">
+        
+        <style type="text/css" media="screen">
+            /* html and body fill screen, with no margin or padding, and a black background*/
+            html, body {
+                width:100%;
+                height:100%;
+                margin:0;
+                padding:0;
+            }
+            /*initial body color chosen to match splash screen*/
+            body {
+                background:#552A7F;
+            }
+
+            /* center time/hex vertically and horizontally
+             * offset top and left by 50%
+             * translate (matrix transform) up and right by half of size
+             * support transform in all browsers 
+             * hide initially to prevent FOUC (see script)*/
+            #clock {
+                position:absolute;
+                top:50%;
+                left:50%;
+                color:#fff;
+                transform:          translate(-50%, -50%);
+                -webkit-transform:  translate(-50%, -50%);
+                -moz-transform:     translate(-50%, -50%);
+                -o-transform:       translate(-50%, -50%);
+                -ms-transform:      translate(-50%, -50%);
+                display:none;
+            }
+
+            /* font attributes for time/hex */
+            .visibleText {
+                display:block;
+                font-size:15vw;
+                font-family:'HelveticaNeue-UltraLight', sans-serif;
+                text-align:center;
+                opacity:0.8;
+            }
+
+            #selectors {
+                width:100%;
+                text-align:center;
+            }
+            #selectors a {
+                display:inline-block;
+                width:49%;
+                height:30px;
+                background:#CCCCCC;
+                opacity:0.5;
+            }
+            #selectors a.active {
+                opacity:0.8;
+            }
+            #selectors a:hover {
+                opacity:1;
+            }
+            .noSelect {
+                -webkit-touch-callout:  none;
+                -webkit-user-select:    none;
+                -khtml-user-select:     none;
+                -moz-user-select:       none;
+                -ms-user-select:        none;
+                user-select:            none;
+                -webkit-tap-highlight-color:0;
+            }
+        </style>
+
+        <script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/jquery.color.js" type="text/javascript" charset="utf-8"></script>
+
+        <script type="text/javascript" charset="utf-8">
+
+            $(document).ready(function() {
+              
+                $("#clock").show();
+
+                function clockupdate() {
+                 
+                    var date = new Date();
+     
+                    var hours = date.getHours();
+                    var minutes = date.getMinutes();
+                    var seconds = date.getSeconds();
+             
+                    var color = timeToHex(hours, minutes, seconds);
+                    
+                    $('#time').html(padZero(hours) + ':' + padZero(minutes) + ':' + padZero(seconds));
+         
+                    $('#hex').html('#' + color);
+                    
+             
+                    $('body').animate({'background-color': '#' + color}, 900);
+                    
+                    blackOrWhiteTextColorBasedOnBackground();
+                };
+
+                clockupdate();
+                setInterval(clockupdate, 1000);
+
+
+
+
+                function padZero(val) {
+                    var value = val.toString();
+                 
+                    return (value.length < 2) ? "0" + value : value;
+                }
+                
+               
+                function blackOrWhiteTextColorBasedOnBackground() {
+                 
+                    var color = $('body').css('background-color');
+                    var startIndex = color.indexOf('(') + 1;
+                    var lastIndex = color.indexOf(')');
+                    
+                    
+                    var values = color.slice(startIndex,lastIndex).split(',');
+                    
+                    var o = Math.round( ( (parseInt(values[0]) * 299) + 
+                                          (parseInt(values[1]) * 587) + 
+                                          (parseInt(values[2]) * 114) ) / 1000);
+                    (o > 127) ? $('#hex, #time').css('color', 'black') : $('#hex, #time').css('color', 'white');
+                    (o > 127) ? $('#time').css('color', 'black') : $('#time').css('color', 'white');
+                }
+
+          
+                function timeToHex(hours, minutes, seconds) {
+                  
+                    return padZero(parseInt((hours / 24) * 255, 10).toString(16)) +
+                           padZero(parseInt((minutes / 60) * 255, 10).toString(16)) +
+                           padZero(parseInt((seconds / 60) * 255, 10).toString(16));
+                }
+
+             
+                $('#selectors a').click(function() {
+                
+                    $(this).addClass('active').siblings().removeClass('active');
+                
+                    $( $(this).attr('href') ).show().siblings().hide();
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div id="clock">
+            <div id="textDisplay">
+                <div id="time" class="visibleText noSelect">00:00:00</div>
+                <!--use inline style to prevent possible flash of content-->
+                <div id="hex" class="visibleText noSelect" style="display:none;">#000000</div>
+            </div>
+            <div id="selectors">
+                <a href="#time" class="active"></a> <a href="#hex"></a>
+            </div>
+        </div>
+    </body>
+</html>

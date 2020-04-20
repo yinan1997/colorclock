@@ -1,0 +1,28 @@
+CACHE MANIFEST
+
+# Cache Manifest Version: 1.0
+# Deprecated method. Replaced by JS service worker. See Read Me
+
+js/jquery.min.js
+js/jquery.color.js
+
+apple-touch-icon-57x57.png
+apple-touch-icon-60x60.png
+apple-touch-icon-72x72.png
+apple-touch-icon-76x76.png
+apple-touch-icon-114x114.png
+apple-touch-icon-120x120.png
+apple-touch-icon-144x144.png
+apple-touch-icon-152x152.png
+apple-touch-icon-precomposed-180.png
+
+apple-touch-startup-image-320x460.png
+apple-touch-startup-image-640x920.png
+apple-touch-startup-image-640x1096.png
+apple-touch-startup-image-748x1024.png
+apple-touch-startup-image-750x1294.png
+apple-touch-startup-image-768x1004.png
+apple-touch-startup-image-1182x2208.png
+apple-touch-startup-image-1242x2148.png
+apple-touch-startup-image-1496x2048.png
+apple-touch-startup-image-1536x2008.png
